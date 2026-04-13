@@ -6,37 +6,33 @@ This board never had VIA or VIAL support. Now it does.
 
 ## Quick Start
 
-1. Download `s60x_rgb_vial.hex`
+1. Download the hex file for your preference (see below)
 2. Flash with [QMK Toolbox](https://github.com/qmk/qmk_toolbox) (MCU: ATmega32U4, reset button on back of PCB)
 3. Download [VIAL](https://get.vial.today) — works on Windows, macOS, and Linux
 4. Plug in the keyboard — VIAL auto-detects it, no configuration files needed
 5. Remap keys live
 
+## Firmware Options
+
+The ATmega32U4 has a 28KB flash limit, so not everything fits at once. Pick the build that matches your needs:
+
+| File | RGB Underglow | Tap Dance | Combos | Size |
+|------|:---:|:---:|:---:|---:|
+| **`s60x_rgb_vial.hex`** (default) | ✅ | ❌ | ❌ | 94% |
+| `s60x_rgb_vial_noled.hex` | ❌ | ✅ | ✅ | 97% |
+
+Both builds include: VIAL live remapping, 3 layers, EXTRAKEY (media keys), NKRO, BOOTMAGIC (Esc = EEPROM reset).
+
 ## Files
 
 | File | Description |
 |------|-------------|
-| `s60x_rgb_vial.hex` | Pre-compiled firmware, ready to flash |
+| `s60x_rgb_vial.hex` | Default firmware with RGB underglow |
+| `s60x_rgb_vial_noled.hex` | Firmware with Tap Dance + Combos, no RGB |
 | `keymap.c` | QMK keymap source (3 layers) |
-| `rules.mk` | QMK build rules |
+| `rules.mk` | QMK build rules (edit to customize features) |
 | `config.h` | VIAL configuration (UID, unlock combo, layer count) |
 | `vial.json` | VIAL keyboard definition (compiled into firmware) |
-
-## Features
-
-| Feature | Status |
-|---------|--------|
-| VIAL live remapping | ✅ |
-| 3 layers | ✅ |
-| EXTRAKEY (media keys) | ✅ |
-| NKRO (full key rollover) | ✅ |
-| BOOTMAGIC (Esc = EEPROM reset) | ✅ |
-| Tap Dance (configurable in VIAL) | ✅ |
-| Combos (configurable in VIAL) | ✅ |
-| RGB underglow | ❌ (disabled to save flash) |
-| Per-key backlight | ❌ (disabled to save flash) |
-
-Firmware size: 28,008 / 28,672 bytes (97%)
 
 ## Default Layout
 
@@ -60,6 +56,10 @@ cp -R /path/to/qmk_firmware/keyboards/sentraq keyboards/
 make sentraq/s60_x/rgb:vial
 ```
 
+To switch between builds, edit `rules.mk`:
+- RGB build: `RGBLIGHT_ENABLE = yes`, `TAP_DANCE_ENABLE = no`, `COMBO_ENABLE = no`
+- No LED build: `RGBLIGHT_ENABLE = no`, `TAP_DANCE_ENABLE = yes`, `COMBO_ENABLE = yes`
+
 ## Hardware
 
 - **PCB:** Sentraq S60-X RGB (ATmega32U4, atmel-dfu bootloader)
@@ -71,5 +71,5 @@ make sentraq/s60_x/rgb:vial
 
 - This is for the **RGB** version only. The non-RGB S60-X has a different matrix.
 - Sentraq is defunct. This firmware is a community contribution.
-- RGB underglow was disabled to fit VIAL + all features in the 28KB flash limit.
-  If you want RGB back, disable TAP_DANCE and COMBO in `rules.mk`.
+- The 28KB flash limit on ATmega32U4 means you can't have everything at once.
+  The two builds represent the best tradeoffs for different use cases.
