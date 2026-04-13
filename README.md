@@ -1,51 +1,81 @@
-# Sentraq S60-X RGB — VIA Firmware
+# Sentraq S60-X RGB — VIAL Firmware
 
-VIA-enabled QMK firmware for the Sentraq S60-X RGB keyboard PCB.
+VIAL-enabled QMK firmware for the Sentraq S60-X RGB keyboard PCB.
 
-This board never had VIA support. Now it does.
+This board never had VIA or VIAL support. Now it does.
 
 ## Quick Start
 
-1. Download `s60x_rgb_via.hex`
+1. Download `s60x_rgb_vial.hex`
 2. Flash with [QMK Toolbox](https://github.com/qmk/qmk_toolbox) (MCU: ATmega32U4, reset button on back of PCB)
-3. Open [VIA](https://usevia.app) → Settings → enable "Show Design Tab"
-4. Design tab → Load Draft Definition → select `s60x_rgb_via_definition.json`
-5. Go to Configure → remap keys live
+3. Download [VIAL](https://get.vial.today) — works on Windows, macOS, and Linux
+4. Plug in the keyboard — VIAL auto-detects it, no configuration files needed
+5. Remap keys live
 
 ## Files
 
 | File | Description |
 |------|-------------|
-| `s60x_rgb_via.hex` | Pre-compiled firmware, ready to flash |
-| `s60x_rgb_via_definition.json` | VIA keyboard definition (load in Design tab) |
-| `keymap.c` | QMK keymap source (4 layers, LAYOUT macro) |
-| `rules.mk` | QMK build rules (`VIA_ENABLE = yes`) |
+| `s60x_rgb_vial.hex` | Pre-compiled firmware, ready to flash |
+| `keymap.c` | QMK keymap source (3 layers) |
+| `rules.mk` | QMK build rules |
+| `config.h` | VIAL configuration (UID, unlock combo, layer count) |
+| `vial.json` | VIAL keyboard definition (compiled into firmware) |
+
+## Features
+
+| Feature | Status |
+|---------|--------|
+| VIAL live remapping | ✅ |
+| 3 layers | ✅ |
+| EXTRAKEY (media keys) | ✅ |
+| NKRO (full key rollover) | ✅ |
+| BOOTMAGIC (Esc = EEPROM reset) | ✅ |
+| Tap Dance (configurable in VIAL) | ✅ |
+| Combos (configurable in VIAL) | ✅ |
+| RGB underglow | ❌ (disabled to save flash) |
+| Per-key backlight | ❌ (disabled to save flash) |
+
+Firmware size: 28,008 / 28,672 bytes (97%)
 
 ## Default Layout
 
 - **Layer 0:** Standard ANSI with split backspace
 - **Layer 1:** Function layer (F1-F12, media, navigation)
-- **Layers 2-3:** Empty (configure via VIA)
+- **Layer 2:** Empty (configure via VIAL)
+
+## Why VIAL instead of VIA?
+
+VIA rejects the S60-X's USB Vendor ID (`0xFEED` — QMK's default) and has WebHID issues on macOS.
+VIAL is a desktop app that talks directly over HID — no browser, no permission issues, no definition files to load.
+The keyboard definition is baked into the firmware, so VIAL auto-detects the board on any computer.
 
 ## Building From Source
 
+Requires [vial-qmk](https://github.com/vial-kb/vial-qmk) (not regular QMK):
+
 ```bash
-# Copy keymap.c and rules.mk to:
-# qmk_firmware/keyboards/sentraq/s60_x/rgb/keymaps/via/
+git clone https://github.com/vial-kb/vial-qmk
+cd vial-qmk
 
-qmk compile -kb sentraq/s60_x/rgb -km via
+# Copy keyboard files from QMK
+cp -R /path/to/qmk_firmware/keyboards/sentraq keyboards/
+
+# Copy the vial keymap files into keyboards/sentraq/s60_x/rgb/keymaps/vial/
+# Then compile:
+make sentraq/s60_x/rgb:vial
 ```
-
-Compiled size: 26,812 / 28,672 bytes (93%)
 
 ## Hardware
 
 - **PCB:** Sentraq S60-X RGB (ATmega32U4, atmel-dfu bootloader)
 - **Sold via:** Massdrop/Drop (~2017, discontinued)
-- **Vendor/Product ID:** 0xFEED:0x6060
+- **Vendor/Product ID:** 0x5351:0x6060
+- **VIAL unlock combo:** Esc + Backspace
 
 ## Notes
 
 - This is for the **RGB** version only. The non-RGB S60-X has a different matrix.
-- The VIA definition uses the `LAYOUT` macro (65 keys) which supports split backspace and split right shift configurations.
 - Sentraq is defunct. This firmware is a community contribution.
+- RGB underglow was disabled to fit VIAL + all features in the 28KB flash limit.
+  If you want RGB back, disable TAP_DANCE and COMBO in `rules.mk`.
