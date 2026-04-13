@@ -44,12 +44,6 @@ Firmware size: 28,008 / 28,672 bytes (97%)
 - **Layer 1:** Function layer (F1-F12, media, navigation)
 - **Layer 2:** Empty (configure via VIAL)
 
-## Why VIAL instead of VIA?
-
-VIA rejects the S60-X's USB Vendor ID (`0xFEED` — QMK's default) and has WebHID issues on macOS.
-VIAL is a desktop app that talks directly over HID — no browser, no permission issues, no definition files to load.
-The keyboard definition is baked into the firmware, so VIAL auto-detects the board on any computer.
-
 ## Building From Source
 
 Requires [vial-qmk](https://github.com/vial-kb/vial-qmk) (not regular QMK):
